@@ -1,3 +1,83 @@
+# Flat Redux
+
+## Simplify action creators
+
+Any slice of state uses single action creator with `updater` function as argument
+`updater` to be invoked in reducer with corresponding state slice
+1 state - 1 action
+
+```
+export const setTodo = updater => ({
+  type: "SET_THIS_STATE_SLICE",
+  updater
+});
+```
+
+## Simplify reducer
+
+All reducers are of the same logic, and each slice of state bounded to sindle action type
+reducers might be generated
+
+```
+const reducer = (stateSlice, action) => (
+  action.type === "SET_THIS_STATE_SLICE"
+  ? action.updater(stateSlice)
+  : stateSlice;
+)
+
+```
+
+## Simplify unit testing
+
+As for reducer is generated, that means no need to test every single reducer. Tests to be made for action creators only
+
+```
+  it("setTodo should append new Todo", () => {
+    const addTodo = setTodo(todos => [...todos, sampleTodo]);
+    expect(addTodo.updater(todos)).toEqual([...todos, sampleTodo]);
+  });
+
+  it("setTodo should toggle 'completed' property", () => {
+    const toggleTodo = setTodo(set([0, "completed"], completed => !completed));
+    expect(toggleTodo.updater([sampleTodo])).toEqual([
+      {
+        id: 10,
+        text: "Simplify Redux",
+        completed: true
+      }
+    ]);
+  });
+```
+
+## Simplify action creator invocation
+
+Logic of data update described in updater function so calling this function from Component or Middleware self-explanatory
+
+```
+  setTodo(todos => [
+    ...todos,
+    {
+      text: input.value,
+      completed: false
+    }
+  ]);
+```
+
+```
+// use with set - update prop by lens provided, set curried, last argument is todos (omited in this example)
+  <ul>
+    {todos.map((todo, idx) => (
+      <Todo
+        key={todo.text}
+        {...todo}
+        onClick={() =>
+          setTodo(set([idx, "completed"], completed => !completed))
+        }
+      />
+    ))}
+  </ul>
+```
+
 # Redux Todos Example
 
 This project template was built with [Create React App](https://github.com/facebookincubator/create-react-app), which provides a simple way to start React projects with no build configuration needed.
