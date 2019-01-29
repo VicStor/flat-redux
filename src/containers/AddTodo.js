@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { setTodo } from "../actions";
-import { mergeWith } from "../lib";
 
 const AddTodo = ({ setTodo }) => {
   let input;

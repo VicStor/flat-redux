@@ -1,5 +1,3 @@
-let nextTodoId = 0;
-
 export const setTodo = updater => ({
   type: "SET_TODO",
   updater
